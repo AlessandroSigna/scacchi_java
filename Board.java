@@ -1,4 +1,5 @@
 package scacchi_java;
+import java.util.Scanner;
 public class Board {
 
     
@@ -68,9 +69,26 @@ public class Board {
     //Moves piece to given coordinates
     public void movePiece(Piece piece, Coord pos)
     {
+    	
         this.casella[piece.getPosition().getX()][piece.getPosition().getY()] = null;
-
         this.casella[pos.getX()][pos.getY()] = piece.setPosition(pos);
+        
+
+        String promozione;
+        Scanner input = new Scanner(System.in);
+
+        if(this.casella[pos.getX()][pos.getY()].getType()=="Pawn"){
+        	if (pos.getY()==7) {
+        		System.out.println("ecco la promozione per il bianco");
+        		promozione=input.nextLine();
+        		this.casella[pos.getX()][pos.getY()].setType(promozione);
+        	}
+        	else if (pos.getY()==0) {
+        		System.out.println("ecco la promozione per il nero");
+        		promozione=input.nextLine();
+        		this.casella[pos.getX()][pos.getY()].setType(promozione);
+        	}
+        }
     }
     
     public void displayBoard()
