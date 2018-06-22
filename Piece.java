@@ -23,6 +23,12 @@ public class Piece {
         return this;
     }
 
+    public void setType(String type)
+    {
+    	this.type=type;
+        return;
+    }
+
     public String getType()
     {
         return this.type;
