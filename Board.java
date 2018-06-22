@@ -54,6 +54,19 @@ public class Board {
                     casella[7][7] = new Piece("Rook", cordinata[31], false);
     }
 
+    //Returns true if the given coordinate is a valid one (inside the board)
+    public Boolean IsCoordinateValid(Coord pos)
+    {
+        if(pos.getX()<0 || pos.getX() >= DIM || pos.getY()<0 || pos.getY()>=DIM)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
     //Returns piece at given coordinates
     public Piece getPiece(Coord pos)
     {

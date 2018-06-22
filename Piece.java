@@ -417,103 +417,144 @@ public class Piece {
     public Coord[] movePawn(Board board, Coord pos){
         Coord[] cord = new Coord[4];
         
-        Coord pos2=new Coord(0,0);
-        Coord pos3=new Coord(0,0);
-        int z=0, y=0;
+        int y=0;
 
         System.out.println("stai muovendo la pedina "+pos.getX()+" "+pos.getY() + " , la pedina puo andare");
         if(board.getPiece(pos).getColor()==true){
             
             cord[0] = new Coord(pos.getX(),pos.getY()+1);
             cord[1]= new Coord(pos.getX(),pos.getY()+2);
-            //mangio a dx
-            if((pos.getX()+1)<8)
-                cord[2]= new Coord(pos.getX()+1,pos.getY()+1);
-            else
-                cord[2]=null;           
-            //mangio a sx
-            if((pos.getX()-1)>=0)
-                cord[3]= new Coord(pos.getX()-1,pos.getY()+1);
-            else
-                cord[3]=null;
+            if(!board.IsCoordinateValid(cord[0]))
+            {
+                cord[0] = cord[1] = cord[2] = cord[3] = null;
+            }
+            else if(!board.IsCoordinateValid(cord[1]))
+            {
+                cord[1] = null;
+            }
 
-            //System.out.println("alla posizione 1 "+cord[0].getX()+" "+cord[0].getY());
-            //avanza di uno
-            if(board.getPiece(cord[0])!=null){
-                System.out.println("sta");
-                cord[0]=null;
-                cord[1]=null;}
-            
-            //avanza di due
-            if (cord[0]!=null) {            
-                if ((board.getPiece(cord[0])==null)) {
-                    if((board.getPiece(cord[1])!=null) || (pos.getY()>2)){  
-                        cord[1]=null;}}}
-            //System.out.println("alla posizione 1 "+cord[0].getX()+" "+cord[0].getY());
-            //mangia a sx
-            if(cord[2]!=null){    
-                if (board.getPiece(cord[2])==null) {
-                    cord[2]=null;}
-                else if((board.getPiece(cord[2]).getColor()==board.getPiece(pos).getColor())){
-                        cord[2]=null;
+            if(cord[0]!=null)
+            {
+                //mangio a dx
+                if((pos.getX()+1)<8)
+                    cord[2]= new Coord(pos.getX()+1,pos.getY()+1);
+                else
+                    cord[2]=null;           
+                //mangio a sx
+                if((pos.getX()-1)>=0)
+                    cord[3]= new Coord(pos.getX()-1,pos.getY()+1);
+                else
+                    cord[3]=null;
+    
+                //System.out.println("alla posizione 1 "+cord[0].getX()+" "+cord[0].getY());
+                //avanza di uno
+                if(board.getPiece(cord[0])!=null){
+                    System.out.println("sta");
+                    cord[0]=null;
+                    cord[1]=null;}
+                
+                //avanza di due
+                if (cord[1]!=null) {            
+                    if ((board.getPiece(cord[0])==null)) {
+                        if((board.getPiece(cord[1])!=null) || (pos.getY()>2)){  
+                            cord[1]=null;
+                        }
+                    }
+                }
+                //System.out.println("alla posizione 1 "+cord[0].getX()+" "+cord[0].getY());
+                //mangia a sx
+                if(cord[2]!=null){    
+                    if (board.getPiece(cord[2])==null) {
+                        cord[2]=null;}
+                    else if((board.getPiece(cord[2]).getColor()==board.getPiece(pos).getColor())){
+                            cord[2]=null;
+                    }
+                }
+                //System.out.println("alla posizione 1 "+cord[0].getX()+" "+cord[0].getY());
+                //mangia a dx
+                if(cord[3]!=null){
+                    if (board.getPiece(cord[3])==null) {
+                        cord[3]=null;}
+                    else if((board.getPiece(cord[3]).getColor()==board.getPiece(pos).getColor())){
+                            cord[3]=null;
+                    }
                 }
             }
-            //System.out.println("alla posizione 1 "+cord[0].getX()+" "+cord[0].getY());
-            //mangia a dx
-            if(cord[3]!=null){
-                if (board.getPiece(cord[3])==null) {
-                    cord[3]=null;}
-                else if((board.getPiece(cord[3]).getColor()==board.getPiece(pos).getColor())){
-                        cord[3]=null;
-                }
+            else
+            {
+                System.out.println("Non posso muovermi, fine scacchiera");
             }
+
+            // codice promozione
         }
 
         if(board.getPiece(pos).getColor()==false){
             
+            
             cord[0] = new Coord(pos.getX(),pos.getY()-1);
             cord[1]= new Coord(pos.getX(),pos.getY()-2);
-            //mangio a dx
-            if((pos.getX()-1)>=0)
-                cord[2]= new Coord(pos.getX()-1,pos.getY()-1);
-            else
-                cord[2]=null;           
-            //mangio a sx
-            if((pos.getX()+1)<8)
-                cord[3]= new Coord(pos.getX()+1,pos.getY()-1);
-            else
-                cord[3]=null;
 
             
-            //avanza di uno
-            if(board.getPiece(cord[0])!=null){
-                System.out.println("sta");
-                cord[0]=null;
-                cord[1]=null;}
-            
-            //avanza di due
-            if (cord[0]!=null) {            
-                if ((board.getPiece(cord[0])==null)) {
-                    if((board.getPiece(cord[1])!=null) || (pos.getY()<6)){  
-                        cord[1]=null;}}}
+            if(!board.IsCoordinateValid(cord[0]))
+            {
+                cord[0] = cord[1] = cord[2] = cord[3] = null;
+            }
+            else if(!board.IsCoordinateValid(cord[1]))
+            {
+                cord[1] = null;
+            }
+
+            if(cord[0]!=null)
+            {
+                //mangio a dx
+                if((pos.getX()-1)>=0)
+                    cord[2]= new Coord(pos.getX()-1,pos.getY()-1);
+                else
+                    cord[2]=null;           
+                //mangio a sx
+                if((pos.getX()+1)<8)
+                    cord[3]= new Coord(pos.getX()+1,pos.getY()-1);
+                else
+                    cord[3]=null;
+
                 
-            //mangia a sx
-            if(cord[2]!=null){    
-                if (board.getPiece(cord[2])==null) {
-                    cord[2]=null;}
-                else if((board.getPiece(cord[2]).getColor()==board.getPiece(pos).getColor())){
-                        cord[2]=null;
+                //avanza di uno
+                if(board.getPiece(cord[0])!=null){
+                    System.out.println("sta");
+                    cord[0]=null;
+                    cord[1]=null;}
+                
+                //avanza di due
+                if (cord[1]!=null) {            
+                    if ((board.getPiece(cord[0])==null)) {
+                        if((board.getPiece(cord[1])!=null) || (pos.getY()<6)){  
+                            cord[1]=null;}}}
+                    
+                //mangia a sx
+                if(cord[2]!=null){    
+                    if (board.getPiece(cord[2])==null) {
+                        cord[2]=null;}
+                    else if((board.getPiece(cord[2]).getColor()==board.getPiece(pos).getColor())){
+                            cord[2]=null;
+                    }
+                }
+                
+                //mangia a dx
+                if(cord[3]!=null){
+                    if (board.getPiece(cord[3])==null) {
+                        cord[3]=null;}
+                    else if((board.getPiece(cord[3]).getColor()==board.getPiece(pos).getColor())){
+                            cord[3]=null;
+                    }
                 }
             }
+            else
+            {
+                System.out.println("Non posso muovermi, fine scacchiera");
+            }
+
+            // codice promozione
             
-            //mangia a dx
-            if(cord[3]!=null){
-                if (board.getPiece(cord[3])==null) {
-                    cord[3]=null;}
-                else if((board.getPiece(cord[3]).getColor()==board.getPiece(pos).getColor())){
-                        cord[3]=null;
-                }
-            }
         }
 
         
