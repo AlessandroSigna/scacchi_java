@@ -20,9 +20,9 @@ public class Board {
                     cordinata[2]= new Coord(2,0);
                     casella[2][0] = new Piece("Bishop", cordinata[2], true);
                     cordinata[3]= new Coord(3,0);
-                    casella[3][0] = new Piece("King", cordinata[3], true);
+                    casella[3][0] = new Piece("Queen", cordinata[3], true);
                     cordinata[4]= new Coord(4,0);
-                    casella[4][0] = new Piece("Queen", cordinata[4], true);
+                    casella[4][0] = new Piece("King", cordinata[4], true);
                     cordinata[5]= new Coord(5,0);
                     casella[5][0] = new Piece("Bishop", cordinata[5], true);
                     cordinata[6]= new Coord(6,0);
@@ -44,9 +44,9 @@ public class Board {
                     cordinata[26]= new Coord(2,7);
                     casella[2][7] = new Piece("Bishop", cordinata[26], false);
                     cordinata[27]= new Coord(3,7);
-                    casella[3][7] = new Piece("King", cordinata[27], false);
+                    casella[3][7] = new Piece("Queen", cordinata[27], false);
                     cordinata[28]= new Coord(4,7);
-                    casella[4][7] = new Piece("Queen", cordinata[28], false);
+                    casella[4][7] = new Piece("King", cordinata[28], false);
                     cordinata[29]= new Coord(5,7);
                     casella[5][7] = new Piece("Bishop", cordinata[29], false);
                     cordinata[30]= new Coord(6,7);
@@ -127,7 +127,7 @@ public class Board {
     public void displayBoard()
     {   System.out.println(" ");
         System.out.println();
-        System.out.println("BIANCHI");
+        System.out.println("NERI");
         System.out.println();
         for (int y = 0; y < DIM; y++)
         {
@@ -148,7 +148,7 @@ public class Board {
             System.out.println();
         }
         System.out.println();
-        System.out.println("NERI");
+        System.out.println("BIANCHI");
         System.out.println(" ");
         
     }
