@@ -80,7 +80,7 @@ public class Game extends HttpServlet
                         boolean color = !rs.getBoolean("color");
                         Coord c = new Coord(cl, cn);
                         Piece p = new Piece(pieza, color);
-                        b.add();
+                        b.add(p);
                     }
                 }
                 if("1".equals(code))
