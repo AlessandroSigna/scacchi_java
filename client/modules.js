@@ -21,9 +21,9 @@ $(window).load(function (){
 			if(this.id == pieceID)
 			{
 				$(this).removeClass("bg_yellow");
-				for(var i = 0; i < jobj.nvalids; ++i)
+				for(var i = 0; i < jobj.length; ++i)
 				{
-					var element = document.getElementById(jobj.valids[i]);
+					var element = document.getElementById(jobj[i].coord);
 					$(element).removeClass("bg_green");
 				}
 				isChecked = false;
@@ -41,7 +41,7 @@ $(window).load(function (){
 					$(pieceChecked).html("");
 					for(var i = 0; i < jobj.length; ++i)
 					{
-						var element = document.getElementById(jobj[i]);
+						var element = document.getElementById(jobj[i].coord);
 						$(element).removeClass("bg_green");
 					}
 					isChecked = false;
@@ -59,20 +59,21 @@ $(window).load(function (){
 			pieceID = this.id;
 			pieceText = $(this).text();
 			
-			/*var coord = (this.id).split("",2);
+			var coord = (this.id).split("",2);
 			var formData = { 'code': 0, 'cL': coord[0], 'cN' = coord[1] };
 				$.ajax(
 				{
-					url: "/STGI/game",
+					url: "localhost:8080/STGI/game",
 					type: "post",
 					data: formData,
 					success: function(d)
 					{
 						jobj = JSON.parse(d);
-					}
+					}					
 				});
 			
-			if(jobj.npos == 0)
+			
+			if(jobj.length == 0)
 			{
 				alert("Nessuna mossa disponibile per questa pedina");
 			}
@@ -83,8 +84,7 @@ $(window).load(function (){
 					var element = document.getElementById(jobj[i]);
 					$(element).addClass("bg_green");
 				}
-			}*/
-
+			}
 
 
 
@@ -96,15 +96,16 @@ $(window).load(function (){
 			//if(response == 0)
 			//non puoi muovere questa pedina
 			//else
-			$(this).addClass("bg_yellow");
+			
+			/*$(this).addClass("bg_yellow");
 			
                     
-			var v = '[{ "cL": "B", "cN": "4" }, { "cL": "D", "cN": "5" }]';
+			var v = '[{ "coord": "F4" }, { "coord": "D5" }, { "coord": "A6" }]';
 			jobj = JSON.parse(v);
-			alert(jobj[0].cL);
-			/*for(var i = 0; i < jobj.length; ++i)
+			var npos = jobj.length;
+			for(var i = 0; i < npos; ++i)
 			{
-				var element = document.getElementById(jobj[i]);
+				var element = document.getElementById(jobj[i].coord);
 				$(element).addClass("bg_green");
 			}*/
 		}
