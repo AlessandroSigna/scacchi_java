@@ -9,6 +9,10 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import scacchi_java.Board;
+import scacchi_java.Coord;
+
 import org.json.JSONArray;
 
 public class Game extends HttpServlet
@@ -57,6 +61,7 @@ public class Game extends HttpServlet
                 {
                     String cL = req.getParameter("cL");
                     String cN = req.getParameter("cN");
+                    Boolean cColor = req.getParameter("color");
                     
                     //Istanzio Classe Scacchiera
                     //Interrogo Database per avere lista pezzi
@@ -82,23 +87,41 @@ public class Game extends HttpServlet
                         Piece p = new Piece(pieza, color);
                         b.add();
                     }
+
+                    Coord pieceCoord = new Coord(int_cL, int_cN);
+                    Piece selectedPiece = b.getPiece(pieceCoord);
+                    
+                    /* il json contenente la lista di posizioni possibili sarà del tipo
+                     [
+                        { "cL": "B", "cN": "4" },
+                        { "cL": "D", "cN": "5" }
+                    ]
+                    */
+                    Coord[] posArray = selectedPiece.move(b, pieceCoord);
+                    if(posArray == null)
+                    {
+                        out.print("-1");    //codice specifico nel caso in cui nessuna mossa sia disponibile per la pedina selezionata
+                        out.close();
+                        return;
+                    }
+                    else
+                    {
+                        String jsonList = "[";
+                        for (int i = 0; i<posArray.length; i++) {
+                            String itemString = "{cL:" + numberToLetter(posArray[i].getX()) + ",cN:" + (8-posArray[i].getY()) + (i==posArray.length-1)?"}":"},";
+                            jsonList += itemString;
+                        }
+                        jsonList += "]";
+                        
+                        out.print(jsonList);
+                        out.close();
+                        return;
+                    }
                 }
                 if("1".equals(code))
                 {
                     
                 }
-            }
-            if("0".equals(code)) //FindMoves
-            {
-                String cL = req.getParameter("cL");
-                String cN = req.getParameter("cN");
-                
-                //devo ottenere la scacchiera dal DB e metterla nella forma
-                //
-                
-                int int_cL = letterToNumber(cL);
-                int int_cN = Integer.valueOf(cN) - 1;
-                
             }
         }
         catch(Exception e)
