@@ -65,7 +65,7 @@ public class Game extends HttpServlet
                     //Restituisco il JSON
                     
                     int int_cL = letterToNumber(cL);
-                    int int_cN = Integer.valueOf(cN) - 1;
+                    int int_cN = 8 - Integer.valueOf(cN);
                     
                     st = con.prepareStatement("SELECT * FROM tablapartido WHERE partido=?");
                     st.setString(1, partido);
@@ -75,30 +75,82 @@ public class Game extends HttpServlet
                     {
                         //addPiece
                         String pieza = rs.getString("pieza");
-                        int cn = rs.getInt("numero") - 1;
+                        int cn = 8 - rs.getInt("numero");
                         int cl = letterToNumber(rs.getString("letra"));
-                        boolean color = !rs.getBoolean("color");
+                        boolean color = rs.getBoolean("color");
                         Coord c = new Coord(cl, cn);
-                        Piece p = new Piece(pieza, color);
+                        Piece p = new Piece(pieza, c, color);
                         b.add(p);
                     }
                 }
-                if("1".equals(code))
+                if("1".equals(code)) //Find Moves
                 {
+                    //prendo coordinata inizio
+                    //prendo coorinata fine
+                    //faccio mossa ->
+                                    // se è normale: aggiorno posizione database
+                                    // restituisco json con codice 0
+                                    // se è un arrocco
+                                    // aggiorno posizione due pezzi database
+                                    //resttuisco json con codice 1, posizine iniziale torre, posizione finale torre
+
+                    JSONObject jObj = new JSONObjet();
+                    String cLin = req.getParameter("cLin");
+                    String cNin = req.getParameter("cNin");
+                    String cLfin = req.getParameter("cLfin");
+                    String cNfin = req.getParameter("cNfin");
+
+                    int int_cLin = letterToNumber(cLin);
+                    int int_cNin = 8 - Integer.valueOf(cNin);
+                    int int_cLfin = letterToNumber(cLfin);
+                    int int_cNfin = 8 - Integer.valueOf(cNfin);
+                    Coord in = new Coord(int_cLin, int_cNin);
+                    Coord fin = new Coord(int_cLfin, int_CNfin);
                     
+                    //Costruisco board
+                    st = con.prepareStatement("SELECT * FROM tablapartido WHERE partido=?");
+                    st.setString(1, partido);
+                    rs = st.executeQuery();
+                    Board b = new Board();
+                    boolean enroque = false;
+                    while(rs.next())
+                    {
+                        //addPiece
+                        String pieza = rs.getString("pieza");
+                        int cn = 8 - rs.getInt("numero");
+                        int cl = letterToNumber(rs.getString("letra"));
+                        boolean color = rs.getBoolean("color");
+                        Coord c = new Coord(cl, cn);
+                        Piece p = new Piece(pieza, c, color);
+                        b.add(p);
+                    }
+                    rs.close();
+                    st.close();
+                    if(b.isEnroque(in, fin))
+                        enroque = true;
+                    //muovi pezzo
+                    st = conn.prepareStatement("UPDATE tablapartido SET letra=?, numero=?, avanzo=1 where partido=? AND letra=? AND numero=?");
+                    st.setString(1, cLfin);
+                    st.setString(2, cNfin);
+                    st.setString(3, partido);
+                    st.setString(4, cLin);
+                    st.setString(5, cNin);
+                    st.executeUpdate();
+                    if(enroque)
+                    {
+                        if("C".equals(cLfin))
+                        {
+                            st.setString(1, "D");
+                            st.setString(4, "A");
+                        }
+                        else
+                        {
+                            st.setString(1, "F");
+                            st.setString(4, "H");
+                        }
+                        st.executeUpdate();
+                    }
                 }
-            }
-            if("0".equals(code)) //FindMoves
-            {
-                String cL = req.getParameter("cL");
-                String cN = req.getParameter("cN");
-                
-                //devo ottenere la scacchiera dal DB e metterla nella forma
-                //
-                
-                int int_cL = letterToNumber(cL);
-                int int_cN = Integer.valueOf(cN) - 1;
-                
             }
         }
         catch(Exception e)
