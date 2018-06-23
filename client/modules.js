@@ -12,7 +12,7 @@ var pieceText = "";
 var pieceID;
 var jobj = "";
 
-$(window).load(function () {
+$(window).load(function (){
     
     $(".chessboard div").click(function(event) {    //evento click su un tassello di gioco
         event.preventDefault();
@@ -39,9 +39,9 @@ $(window).load(function () {
 					$(this).addClass("white"); //DINAMICA
 					$(this).html(pieceText);
 					$(pieceChecked).html("");
-					for(var i = 0; i < jobj.nvalids; ++i)
+					for(var i = 0; i < jobj.length; ++i)
 					{
-						var element = document.getElementById(jobj.valids[i]);
+						var element = document.getElementById(jobj[i]);
 						$(element).removeClass("bg_green");
 					}
 					isChecked = false;
@@ -59,6 +59,35 @@ $(window).load(function () {
 			pieceID = this.id;
 			pieceText = $(this).text();
 			
+			/*var coord = (this.id).split("",2);
+			var formData = { 'code': 0, 'cL': coord[0], 'cN' = coord[1] };
+				$.ajax(
+				{
+					url: "/STGI/game",
+					type: "post",
+					data: formData,
+					success: function(d)
+					{
+						jobj = JSON.parse(d);
+					}
+				});
+			
+			if(jobj.npos == 0)
+			{
+				alert("Nessuna mossa disponibile per questa pedina");
+			}
+			else
+			{
+				for(var i = 0; i < jobj.length; ++i)
+				{
+					var element = document.getElementById(jobj[i]);
+					$(element).addClass("bg_green");
+				}
+			}*/
+
+
+
+
 			//QUERY AL SERVER, RICEVO UN JSON
 			/*COORDINATE PER IL SERVER
 				 * var coord = (this.id).split("",2);
@@ -68,20 +97,16 @@ $(window).load(function () {
 			//non puoi muovere questa pedina
 			//else
 			$(this).addClass("bg_yellow");
-			var v = '{"valids":["B3","G6"],"nvalids":2}';
+			
+                    
+			var v = '[{ "cL": "B", "cN": "4" }, { "cL": "D", "cN": "5" }]';
 			jobj = JSON.parse(v);
-			
-			for(var i = 0; i < jobj.nvalids; ++i)
+			alert(jobj[0].cL);
+			/*for(var i = 0; i < jobj.length; ++i)
 			{
-				var element = document.getElementById(jobj.valids[i]);
+				var element = document.getElementById(jobj[i]);
 				$(element).addClass("bg_green");
-				if(
-			}
-				
-				
-				
-
-			
+			}*/
 		}
         
 		

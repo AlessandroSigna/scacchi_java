@@ -80,11 +80,15 @@ public class Game extends HttpServlet
                     {
                         //addPiece
                         String pieza = rs.getString("pieza");
+                        String avanzoStr = rs.getString("avanzo");
+                        boolean avanzo = false;
+                        if("1".equals(avanzoStr))
+                            avanzo = true;
                         int cn = 8 - rs.getInt("numero");
                         int cl = letterToNumber(rs.getString("letra"));
                         boolean color = rs.getBoolean("color");
                         Coord c = new Coord(cl, cn);
-                        Piece p = new Piece(pieza, c, color);
+                        Piece p = new Piece(pieza, c, color, !avanzo);
                         b.add(p);
                     }
 
@@ -120,20 +124,12 @@ public class Game extends HttpServlet
                 }
                 if("1".equals(code)) //Find Moves
                 {
-                    //prendo coordinata inizio
-                    //prendo coorinata fine
-                    //faccio mossa ->
-                                    // se è normale: aggiorno posizione database
-                                    // restituisco json con codice 0
-                                    // se è un arrocco
-                                    // aggiorno posizione due pezzi database
-                                    //resttuisco json con codice 1, posizine iniziale torre, posizione finale torre
-
                     JSONObject jObj = new JSONObjet();
                     String cLin = req.getParameter("cLin");
                     String cNin = req.getParameter("cNin");
                     String cLfin = req.getParameter("cLfin");
                     String cNfin = req.getParameter("cNfin");
+                    String cEvol = req.getParameter("cEvol");
 
                     int int_cLin = letterToNumber(cLin);
                     int int_cNin = 8 - Integer.valueOf(cNin);
@@ -148,6 +144,9 @@ public class Game extends HttpServlet
                     rs = st.executeQuery();
                     Board b = new Board();
                     boolean enroque = false;
+                    boolean evolving = false;
+                    boolean jaque = false;
+                    boolean jaquemate = false;
                     while(rs.next())
                     {
                         //addPiece
@@ -161,9 +160,41 @@ public class Game extends HttpServlet
                     }
                     rs.close();
                     st.close();
+                    if(b.isEvolving(in, fin))
+                    {
+                        if("0".equals(cEvol))
+                        {
+                            jobj.put("res", 1); //IL CONTROLLO PASSA AL CLIENTE
+                            con.close();
+                            out.println(jobj.toString());
+                            return;
+                        }
+                        evolving = true;
+                    }
+
                     if(b.isEnroque(in, fin))
                         enroque = true;
+                        
+                    if(b.esJaque(in, fin))
+                        jaque = true;
+
+                    if(b.esJaqueMate(in, fin));
+                        jaquemate = true;
+
+
                     //muovi pezzo
+                    //fase 1: controllo se c'è una pedina nella casella finale ed aggiorno i database
+                    if(!b.isEmpty(fin))
+                    {
+                        st = con.prepareStatement("DELETE FROM tablapartido where partido=? AND letra=? AND numero=?");
+                        st.setString(1,partido);
+                        st.setString(2, cLfin);
+                        st.setString(2, cNfin);
+                        st.executeUpdate();
+                        st.close();
+                    }
+
+                    //fase 2: aggiorno posizione pedina mossa
                     st = conn.prepareStatement("UPDATE tablapartido SET letra=?, numero=?, avanzo=1 where partido=? AND letra=? AND numero=?");
                     st.setString(1, cLfin);
                     st.setString(2, cNfin);
@@ -171,26 +202,52 @@ public class Game extends HttpServlet
                     st.setString(4, cLin);
                     st.setString(5, cNin);
                     st.executeUpdate();
+
+                    //fase 3: se ho fatto l'arrocco, preparo il json con la nuova posizione delle torri
                     if(enroque)
                     {
+                        jObj.add("enroque", "1");
                         if("C".equals(cLfin))
                         {
+                            jObj.add("cIn", "A" + cNin);
+                            jObj.add("cFin", "D" + cNin);
                             st.setString(1, "D");
                             st.setString(4, "A");
                         }
                         else
                         {
+                            jObj.add("cIn", "H" + cNin);
+                            jObj.add("cFin", "F" + cNin);
                             st.setString(1, "F");
                             st.setString(4, "H");
                         }
                         st.executeUpdate();
+                        st.close();
                     }
+
+                    if(jaque)
+                        jObj.add("jaque", "1");
+                    else
+                        jObj.add("jaque", "0");
+
+                    if(jaquemate)
+                    {
+                        jObj.add("jaquemate", "1");
+                        //devo aggiornare i database per indicare che la partita è finita
+                        //to do...
+                    }
+                    else
+                        jObj.add("jaquemate", "0");
+                    jobj.put("res", 0);
+                    out.print(jobj.toString());
                 }
             }
         }
         catch(Exception e)
         {
-            out.print("5");
+            JSONObject jobj = new JSONObject();
+            jobj.put("res", 2);
+            out.print(jobj.toString());
             out.close();
             return;
         }
