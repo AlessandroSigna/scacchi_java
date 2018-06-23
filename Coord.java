@@ -15,8 +15,6 @@ public class Coord {
         this.y = y;
     }
 
-
-
     public int getX()
     {
         return this.x;

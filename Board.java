@@ -12,7 +12,7 @@ public class Board {
     {
         
 
-                    
+                    //add stringa pezzo e cordinata 
                     cordinata[0] = new Coord(0,0);
                     casella[0][0] = new Piece("Rook", cordinata[0], true);
                     cordinata[1]= new Coord(1,0);
@@ -55,6 +55,13 @@ public class Board {
                     casella[7][7] = new Piece("Rook", cordinata[31], false);
     }
 
+    public void addPiece(String pezzo, Coord pos, Boolean color){
+    	casella[pos.getX()][pos.getY()] = new Piece(pezzo, pos, color);
+
+    	return;
+    }
+
+
     //Returns true if the given coordinate is a valid one (inside the board)
     public Boolean IsCoordinateValid(Coord pos)
     {
@@ -82,7 +89,18 @@ public class Board {
     //Moves piece to given coordinates
     public void movePiece(Piece piece, Coord pos)
     {
-    	
+    	//sezione re mai toccato distanza due muovi torre
+    	if("King".equals(piece.getType()) && piece.getUnmoved()==true && (piece.getPosition().getX()-pos.getX())==2){
+    		if (pos.getX()==2) {
+    		this.casella[piece.getPosition().getX()][piece.getPosition().getY()] = null;
+        	this.casella[pos.getX()][pos.getY()] = piece.setPosition(pos);	
+    		}
+    		else if (pos.getX()==6) {
+    		this.casella[piece.getPosition().getX()][piece.getPosition().getY()] = null;
+        	this.casella[pos.getX()][pos.getY()] = piece.setPosition(pos);	
+    		}
+    	}
+
         this.casella[piece.getPosition().getX()][piece.getPosition().getY()] = null;
         this.casella[pos.getX()][pos.getY()] = piece.setPosition(pos);
         
@@ -94,6 +112,7 @@ public class Board {
         	if (pos.getY()==7) {
         		System.out.println("ecco la promozione per il bianco");
         		promozione=input.nextLine();
+        		System.out.println(promozione);
         		this.casella[pos.getX()][pos.getY()].setType(promozione);
         	}
         	else if (pos.getY()==0) {
@@ -102,6 +121,7 @@ public class Board {
         		this.casella[pos.getX()][pos.getY()].setType(promozione);
         	}
         }
+        //input.close();
     }
     
     public void displayBoard()
@@ -112,7 +132,7 @@ public class Board {
         for (int y = 0; y < DIM; y++)
         {
             if(y==0){
-                 System.out.println("    0     1     2     3     4     5     6     7");
+                 System.out.println("    A0    B1    C2    D3    E4    F5    G6    H7");
                  System.out.println();
             }
             for (int x = 0; x < DIM; x++)
