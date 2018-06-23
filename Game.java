@@ -19,8 +19,8 @@ public class Game {
             //Return players command coordinates (current and target)
             board.displayBoard();
 
-            if(turno ==false){
-                System.out.println("TURNO BIANCHI");
+            if(turno ==true){
+                System.out.println("TURNO NERI");
                 //prima selezione della calsella (selezione della pedina da muovere)
                 command[0] = p1.getCommand();
                 //System.out.println(command[0].getX()+" "+command[0].getY());
@@ -56,7 +56,7 @@ public class Game {
 
                                 board.movePiece(casella, command[1]);
                                 board.getPiece(command[1]).setUnmoved(false);
-                                turno=true;
+                                turno=false;
                                 break;
                             }
                         /*
@@ -75,9 +75,9 @@ public class Game {
                 }
             }
             
-            if(turno ==true){    
+            if(turno ==false){    
                     
-                System.out.println("TURNO NERI");
+                System.out.println("TURNO BIANCHI");
                 command[0] = p2.getCommand();                    
                 //Gets casella from supplied coordinates
                 casella = board.getPiece(command[0]);
@@ -98,7 +98,7 @@ public class Game {
                             
                             board.movePiece(casella, command[1]);
                             board.getPiece(command[1]).setUnmoved(false);
-                            turno=false;
+                            turno=true;
                             break;
                         }
                         
