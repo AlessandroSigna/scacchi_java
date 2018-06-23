@@ -55,6 +55,42 @@ public class Piece {
         return this.color;
     }
 
+    public String getCodeASCII()
+    {
+        Integer code;
+        switch (type) {
+            case "Rook":
+                code = 9814;
+            break;
+        
+            case "Knight":
+                code = 9816;
+            break;
+        
+            case "Bishop":
+                code = 9815;
+            break;
+        
+            case "King":
+                code = 9813;
+            break;
+        
+            case "Queen":
+                code = 9812;
+            break;
+        
+            case "Pawn":
+                code = 9817;
+            break;
+            
+            default:
+                code = 0;
+                System.out.println("tipo pedina non previsto");
+        }
+        code = color?code+6:code; //il codice delle pedine nere è +6 rispetto quello delle bianche
+        return "&#" + code.toString() + ";"; 
+    }
+
     public Coord[] move(Board board, Coord pos){
         Coord[] cord = new Coord[10];
         Coord[] cord2 = new Coord[2];

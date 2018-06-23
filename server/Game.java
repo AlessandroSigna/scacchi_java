@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import scacchi_java.Board;
 import scacchi_java.Coord;
+import scacchi_java.Piece;
 
 import org.json.JSONArray;
 
@@ -104,7 +105,7 @@ public class Game extends HttpServlet
                     Coord[] posArray = selectedPiece.move(b, pieceCoord);
                     if(posArray == null)
                     {
-                        out.print("-1");    //codice specifico nel caso in cui nessuna mossa sia disponibile per la pedina selezionata
+                        out.print("[]");   //ritorno un array vuoto
                         out.close();
                         return;
                     }
@@ -122,9 +123,9 @@ public class Game extends HttpServlet
                         return;
                     }
                 }
-                if("1".equals(code)) //Find Moves
+                else if("1".equals(code)) //Find Moves
                 {
-                    JSONObject jObj = new JSONObjet();
+                    JSONObject jObj = new JSONObject();
                     String cLin = req.getParameter("cLin");
                     String cNin = req.getParameter("cNin");
                     String cLfin = req.getParameter("cLfin");
@@ -240,6 +241,51 @@ public class Game extends HttpServlet
                         jObj.add("jaquemate", "0");
                     jobj.put("res", 0);
                     out.print(jobj.toString());
+                }
+                else if("SETUP".equals(code))//il client mi richiede lo schema della scacchiera
+                {
+                    st = con.prepareStatement("SELECT * FROM tablapartido WHERE partido=?");
+                    st.setString(1, partido);
+                    rs = st.executeQuery();
+                    Board b = new Board();
+                    while(rs.next())
+                    {
+                        //addPiece
+                        String pieza = rs.getString("pieza");
+                        String avanzoStr = rs.getString("avanzo");
+                        boolean avanzo = false;
+                        if("1".equals(avanzoStr))
+                            avanzo = true;
+                        int cn = 8 - rs.getInt("numero");
+                        int cl = letterToNumber(rs.getString("letra"));
+                        boolean color = rs.getBoolean("color");
+                        Coord c = new Coord(cl, cn);
+                        Piece p = new Piece(pieza, c, color, !avanzo);
+                        b.add(p);
+                    }
+                    
+                    String htmlRes = "";
+                    for(int x = 0; x < 8; x++)
+                    {
+                        for(int y = 0; y < 8; y++)
+                        {
+                            Coord c = new Coord(x,y);
+                            Piece p = b.getPiece(c);
+                            
+                            //manderò una sequenza di div così composti
+                            //<div id="G8" class="bg_white black">&#9822;</div>
+                            //<div id="A6" class="bg_white"></div>
+                            String divId = numberToLetter(x) + "" + (8-y);
+                            String divClassBG = (x+y)/2==0?"bg_black":"bg_white"; //se la somma degli indici è pari lo sfondo della casella è nero... o almeno così mi è sembrato
+                            String divClassPieceColor = p==null?"":(p.getColor()?"black":"white");
+                            String innerHtml = p==null?"":p.getCodeASCII();
+                            htmlRes += "<div id=\"" + divId + "\" class=\"" + divClassBG + " " + divClassPieceColor +"\">" + innerHtml + "</div>";
+                        }
+                        
+                        out.print(htmlRes);
+                        out.close();
+                    }
+
                 }
             }
         }

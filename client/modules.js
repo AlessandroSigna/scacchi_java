@@ -12,8 +12,42 @@ var pieceText = "";
 var pieceID;
 var jobj = "";
 
+//Richiedo la chessboard assumendo che l'html abbia soltando <div class="chessboard"></div> con nulla all'interno
+//ricevo direttamente la stringa html
+function RequestChessboard()
+{
+	var formData = { 'code': 'SETUP' };
+	$.ajax(
+	{
+		url: "localhost:8080/STGI/game",
+		type: "post",
+		data: formData,
+		success: function(d)
+		{
+			
+			if(d == null || d=="")
+			{
+				alert("Errore nella tabella ricevuta");
+			}
+			else
+			{
+				$( ".chessboard" ).append( d );
+				//solo dopo che la scacchiera è stata composta posso registrare le callback dei click sulle singole caselle
+				RegisterCallbacks();	//DA TESTARE: è possibile che occorra aspettare qualche ms prima di registrare le callback perché magari l'append viene eseguita in modo asincrono	
+			}
+			
+		},
+		error: function (err) {
+			alert("AJAX error in request: " + JSON.stringify(err, null, 2));
+		}
+	});
+}
+
 $(window).load(function (){
-    
+	RequestChessboard();
+});
+
+function RegisterCallbacks(){
     $(".chessboard div").click(function(event) {    //evento click su un tassello di gioco
         event.preventDefault();
         if(isChecked == true)
@@ -60,7 +94,7 @@ $(window).load(function (){
 			pieceText = $(this).text();
 			
 			var coord = (this.id).split("",2);
-			var formData = { 'code': 0, 'cL': coord[0], 'cN' = coord[1] };
+			var formData = { 'code': 0, 'cL': coord[0], 'cN' : coord[1] };
 				$.ajax(
 				{
 					url: "localhost:8080/STGI/game",
@@ -69,22 +103,25 @@ $(window).load(function (){
 					success: function(d)
 					{
 						jobj = JSON.parse(d);
-					}					
+						
+						if(jobj == null || jobj.length == 0)
+						{
+							alert("Nessuna mossa disponibile per questa pedina");
+						}
+						else
+						{
+							for(var i = 0; i < jobj.length; ++i)
+							{
+								$("#"+jobj[i].coord).addClass("bg_green");
+							}
+						}
+					},
+					error: function (err) {
+						alert("AJAX error in request: " + JSON.stringify(err, null, 2));
+					}
 				});
 			
 			
-			if(jobj.length == 0)
-			{
-				alert("Nessuna mossa disponibile per questa pedina");
-			}
-			else
-			{
-				for(var i = 0; i < jobj.length; ++i)
-				{
-					var element = document.getElementById(jobj[i]);
-					$(element).addClass("bg_green");
-				}
-			}
 
 
 
@@ -143,4 +180,4 @@ $(window).load(function (){
         }*/
 
     });
-});
+};
