@@ -97,9 +97,9 @@ public class Game extends HttpServlet
                     
                     /* il json contenente la lista di posizioni possibili sarà del tipo
                      [
-                        { "cL": "B", "cN": "4" },
-                        { "cL": "D", "cN": "5" }
-                    ]
+                        { "coord": "B4" },
+                        { "coord": "D5" }
+                     ]
                     */
                     Coord[] posArray = selectedPiece.move(b, pieceCoord);
                     if(posArray == null)
@@ -112,7 +112,7 @@ public class Game extends HttpServlet
                     {
                         String jsonList = "[";
                         for (int i = 0; i<posArray.length; i++) {
-                            String itemString = "{cL:" + numberToLetter(posArray[i].getX()) + ",cN:" + (8-posArray[i].getY()) + (i==posArray.length-1)?"}":"},";
+                            String itemString = "{\"coord\":\"" + numberToLetter(posArray[i].getX()) + "" + (8-posArray[i].getY()) + "\"}" + (i==posArray.length-1)?"":",";
                             jsonList += itemString;
                         }
                         jsonList += "]";
