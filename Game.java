@@ -53,8 +53,8 @@ public class Game {
                                 //marca mossi
 
                                 //mossa della pedina 
-
-                                board.movePiece(casella, command[1]);
+                            	board.movePiece(casella.getPosition(), command[1]);
+                                //board.movePiece(casella, command[1]);
                                 board.getPiece(command[1]).setUnmoved(false);
                                 turno=false;
                                 break;
@@ -96,7 +96,8 @@ public class Game {
                         
                         if((command[1].getX()==pos_Avable[x].getX()) && (command[1].getY()==pos_Avable[x].getY())){
                             
-                            board.movePiece(casella, command[1]);
+                            board.movePiece(casella.getPosition(), command[1]);
+                            //board.movePiece(casella, command[1]);
                             board.getPiece(command[1]).setUnmoved(false);
                             turno=true;
                             break;

@@ -14,49 +14,49 @@ public class Board {
 
                     //add stringa pezzo e cordinata 
                     cordinata[0] = new Coord(0,0);
-                    casella[0][0] = new Piece("Rook", cordinata[0], true);
+                    casella[0][0] = new Piece("Rook", cordinata[0], true, true);
                     cordinata[1]= new Coord(1,0);
-                    casella[1][0] = new Piece("Knight", cordinata[1], true);
+                    casella[1][0] = new Piece("Knight", cordinata[1], true, true);
                     cordinata[2]= new Coord(2,0);
-                    casella[2][0] = new Piece("Bishop", cordinata[2], true);
+                    casella[2][0] = new Piece("Bishop", cordinata[2], true, true);
                     cordinata[3]= new Coord(3,0);
-                    casella[3][0] = new Piece("Queen", cordinata[3], true);
+                    casella[3][0] = new Piece("Queen", cordinata[3], true, true);
                     cordinata[4]= new Coord(4,0);
-                    casella[4][0] = new Piece("King", cordinata[4], true);
+                    casella[4][0] = new Piece("King", cordinata[4], true, true);
                     cordinata[5]= new Coord(5,0);
-                    casella[5][0] = new Piece("Bishop", cordinata[5], true);
+                    casella[5][0] = new Piece("Bishop", cordinata[5], true, true);
                     cordinata[6]= new Coord(6,0);
-                    casella[6][0] = new Piece("Knight", cordinata[6], true);
+                    casella[6][0] = new Piece("Knight", cordinata[6], true, true);
                     cordinata[7]= new Coord(7,0);
-                    casella[7][0] = new Piece("Rook", cordinata[7], true);
+                    casella[7][0] = new Piece("Rook", cordinata[7], true, true);
                 
                 for(int x=0;x<8;x++){
                     cordinata[x+8]= new Coord(x,1);
-                    casella[x][1] = new Piece("Pawn", cordinata[x+8], true);
+                    casella[x][1] = new Piece("Pawn", cordinata[x+8], true, true);
                     cordinata[x+16]= new Coord(x,6);
-                    casella[x][6] = new Piece("Pawn", cordinata[x+16], false);
+                    casella[x][6] = new Piece("Pawn", cordinata[x+16], false, true);
                 }
                 
                     cordinata[24]= new Coord(0,7);
-                    casella[0][7] = new Piece("Rook", cordinata[24], false);
+                    casella[0][7] = new Piece("Rook", cordinata[24], false, true);
                     cordinata[25]= new Coord(1,7);
-                    casella[1][7] = new Piece("Knight", cordinata[25], false);
+                    casella[1][7] = new Piece("Knight", cordinata[25], false, true);
                     cordinata[26]= new Coord(2,7);
-                    casella[2][7] = new Piece("Bishop", cordinata[26], false);
+                    casella[2][7] = new Piece("Bishop", cordinata[26], false, true);
                     cordinata[27]= new Coord(3,7);
-                    casella[3][7] = new Piece("Queen", cordinata[27], false);
+                    casella[3][7] = new Piece("Queen", cordinata[27], false, true);
                     cordinata[28]= new Coord(4,7);
-                    casella[4][7] = new Piece("King", cordinata[28], false);
+                    casella[4][7] = new Piece("King", cordinata[28], false, true);
                     cordinata[29]= new Coord(5,7);
-                    casella[5][7] = new Piece("Bishop", cordinata[29], false);
+                    casella[5][7] = new Piece("Bishop", cordinata[29], false, true);
                     cordinata[30]= new Coord(6,7);
-                    casella[6][7] = new Piece("Knight", cordinata[30], false);
+                    casella[6][7] = new Piece("Knight", cordinata[30], false, true);
                     cordinata[31]= new Coord(7,7);
-                    casella[7][7] = new Piece("Rook", cordinata[31], false);
+                    casella[7][7] = new Piece("Rook", cordinata[31], false, true);
     }
 
-    public void addPiece(String pezzo, Coord pos, Boolean color){
-    	casella[pos.getX()][pos.getY()] = new Piece(pezzo, pos, color);
+    public void addPiece(Piece pezzo){
+    	casella[pezzo.getPosition().getX()][pezzo.getPosition().getY()] = pezzo;
 
     	return;
     }
@@ -85,34 +85,35 @@ public class Board {
         else
             return null;
     }
-
+    //casella iniziale e casella finale
     //Moves piece to given coordinates
-    public void movePiece(Piece piece, Coord pos)
+    public void movePiece(Coord init, Coord pos)
+    //public void movePiece(Piece piece, Coord pos)
     {
-    	//sezione re mai toccato distanza due muovi torre
-    	if("King".equals(piece.getType()) && piece.getUnmoved()==true && (piece.getPosition().getX()-pos.getX())==2){
-    		if (pos.getX()==2) {
-    		this.casella[piece.getPosition().getX()][piece.getPosition().getY()] = null;
-        	this.casella[pos.getX()][pos.getY()] = piece.setPosition(pos);	
-    		}
-    		else if (pos.getX()==6) {
-    		this.casella[piece.getPosition().getX()][piece.getPosition().getY()] = null;
-        	this.casella[pos.getX()][pos.getY()] = piece.setPosition(pos);	
-    		}
-    	}
+    	
+    	Piece piece =  this.casella[init.getX()][init.getY()];
+
+		if(isCastling(init, pos)==true){
+        	System.out.println("e' un arrocco!");
+        }
+        else if (isCastling(init, pos)==false){
+        	System.out.println("non e' un arrocco!");
+        }
+
 
         this.casella[piece.getPosition().getX()][piece.getPosition().getY()] = null;
         this.casella[pos.getX()][pos.getY()] = piece.setPosition(pos);
+        
         
 
         String promozione;
         Scanner input = new Scanner(System.in);
 
+        	//public boolean isEvolving(Coord init, Coord pos)
         if(this.casella[pos.getX()][pos.getY()].getType()=="Pawn"){
         	if (pos.getY()==7) {
         		System.out.println("ecco la promozione per il bianco");
         		promozione=input.nextLine();
-        		System.out.println(promozione);
         		this.casella[pos.getX()][pos.getY()].setType(promozione);
         	}
         	else if (pos.getY()==0) {
@@ -121,9 +122,43 @@ public class Board {
         		this.casella[pos.getX()][pos.getY()].setType(promozione);
         	}
         }
-        //input.close();
     }
     
+    public boolean isEmpty(Coord pos){
+    	boolean empty = false;
+    	if ((this.casella[pos.getX()][pos.getY()])==null) {
+    		empty=true;
+    	}
+    	return empty;
+	}
+
+   	public boolean isCastling(Coord init, Coord pos){
+   		boolean castling = false;
+
+   		
+   		System.out.println("ci siamo");
+   		//sezione re mai toccato distanza due muovi torre ->&& piece.getUnmoved()==true && (init.getX()-pos.getX())==2
+    	if("King".equals(this.casella[init.getX()][init.getY()].getType()) && this.casella[init.getX()][init.getY()].getUnmoved()==true && (init.getX()-pos.getX())==2){
+    		System.out.println("ci siamo 1");
+    		castling=true;
+    		if (pos.getX()==2) {
+    			System.out.println("ci siamo 2");
+    			//arroco corto
+    			/*if()
+    				this.casella[0][0] = null;
+        			this.casella[pos.getX()][pos.getY()] = piece.setPosition(pos.setPosition(0,0));	*/
+    		}
+    		else if (pos.getX()==6) {
+    			System.out.println("ci siamo 3");
+    			/*this.casella[piece.getPosition().getX()][piece.getPosition().getY()] = null;
+        		this.casella[pos.getX()][pos.getY()] = piece.setPosition(pos);	*/
+    		}
+    	}
+
+   		return castling;
+   	}
+
+
     public void displayBoard()
     {   System.out.println(" ");
         System.out.println();
@@ -152,5 +187,7 @@ public class Board {
         System.out.println(" ");
         
     }
+
+
 
 }

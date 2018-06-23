@@ -4,17 +4,17 @@ public class Piece {
 
     private String type;
     private Coord position;
-    private boolean white;
+    private boolean color;
     private boolean unmoved;
     
     //Initializes a piece.
-    public Piece(String type, Coord position, boolean white)
+    public Piece(String type, Coord position, boolean color, boolean unmoved)
     {
        
         this.type = type;
         this.position=position;
-        this.white = white;
-        this.unmoved = true;
+        this.color = color;
+        this.unmoved = unmoved;
     }
 
     public Piece setPosition(Coord pos)
@@ -52,12 +52,12 @@ public class Piece {
 
     public boolean getColor()
     {
-        return this.white;
+        return this.color;
     }
 
     public Coord[] move(Board board, Coord pos){
-        Coord[] cord = new Coord[9];
-        
+        Coord[] cord = new Coord[10];
+        Coord[] cord2 = new Coord[2];
         if(this.type == "Knight"){
             return moveKnight(board, pos);
         } 
@@ -71,7 +71,14 @@ public class Piece {
         		x++;	
         	}
 
-        	cord[x]=castlingKing(board, pos);            
+        cord2=castlingKing(board, pos);
+        cord[x]=cord2[0];
+        cord[x+1]=cord2[1];
+
+        if(cord2[0]!=null)
+        	System.out.println(cord2[0].getX()+" "+cord2[0].getY());
+        if(cord2[1]!=null)                  	
+            System.out.println(cord2[1].getX()+" "+cord2[1].getY());   
             return cord;
         } 
         else if("Queen".equals(this.type)){
@@ -296,8 +303,9 @@ public class Piece {
 
 
 
-    public Coord castlingKing(Board board, Coord pos){
+    public Coord[] castlingKing(Board board, Coord pos){
     	
+    	Coord[] cord = new Coord[2];
     	Coord pos0=new Coord(0,0);
     	Coord pos1=new Coord(1,0);
     	Coord pos2=new Coord(2,0);
@@ -313,59 +321,70 @@ public class Piece {
     	Coord pos6N=new Coord(6,7);
     	Coord pos7N=new Coord(7,7);
 
-    	//sezione sopra(bianchi nel software neri nella scacchiera)
+    	//sezione sopra( neri nella scacchiera)
     	if(board.getPiece(pos).getColor()==true){
-    		System.out.println("lungo sopra");
+    		System.out.println("sopra");
     		//verifico che il re non si sia mai mosso
     		if(board.getPiece(pos).getUnmoved()==true){
-    			System.out.println("lungo sopra");
+    			System.out.println("sopra");
     			//ARROCCO LUNGO SOPRA
-    			//verifico che la torre non si sia mai mossa
-    			if(board.getPiece(pos0).getUnmoved()==true){
-    				
-    				//verifico che non ci siano pezzi tra re e torre
-    				if(board.getPiece(pos1)==null && board.getPiece(pos2)==null && board.getPiece(pos3)==null){
-    					System.out.println("lungo sopra");
-    					return pos2;
-    				}
-    			}
-    			//ARROCCO CORTO SOPRA
-    			//verifico che la torre non si sia mai mossa
-    			else if(board.getPiece(pos7).getUnmoved()==true){
+    			//verifico che la torre dx non si sia mai mossa
+    			if(board.getPiece(pos7).getUnmoved()==true){
+    				System.out.println("corto sopra");
     				//verifico che non ci siano pezzi tra re e torre
     				if(board.getPiece(pos5)==null && board.getPiece(pos6)==null){
     					System.out.println("corto sopra");
-    					return pos6;
+    					cord[0] = pos6;
+    				}
+    			}
+    			//ARROCCO CORTO SOPRA
+    			//verifico che la torre sx non si sia mai mossa
+    			else if(board.getPiece(pos0).getUnmoved()==true){
+    				System.out.println("lungo sopra");
+    				//verifico che non ci siano pezzi tra re e torre
+    				if(board.getPiece(pos1)==null && board.getPiece(pos2)==null && board.getPiece(pos3)==null){
+    					System.out.println("lungo sopra");
+    					cord[1] = pos2;
     				}
     			}
     		}
     	}
 
-    	//sezione sotto(neri nel software bianchi nella scacchiera)
+    	//sezione sotto( bianchi nella scacchiera)
     	if(board.getPiece(pos).getColor()==false){
+    		System.out.println("sotto");
     		//verifico che il re non si sia mai mosso
     		if(board.getPiece(pos).getUnmoved()==true){
+    			System.out.println("sotto");
     			//ARROCCO LUNGO sotto
-    			//verifico che la torre non si sia mai mossa
+    			//verifico che la torre sx non si sia mai mossa
     			if(board.getPiece(pos0N).getUnmoved()==true){
-    				//verifico che non ci siano pezzi tra re e torre
-    				if(board.getPiece(pos1N)==null && board.getPiece(pos2N)==null && board.getPiece(pos3N)==null){
-    					System.out.println("lungo sotto");
-    					return pos2;
-    				}
-    			}
-    			//ARROCCO CORTO sotto
-    			//verifico che la torre non si sia mai mossa
-    			else if(board.getPiece(pos7N).getUnmoved()==true){
+    				System.out.println("corto sotto");
     				//verifico che non ci siano pezzi tra re e torre
     				if(board.getPiece(pos5N)==null && board.getPiece(pos6N)==null){
     					System.out.println("corto sotto");
-    					return pos6N;
+    					cord[0] = pos6N;
+    				}
+    			}
+    			//ARROCCO CORTO sotto
+    			//verifico che la torre dx non si sia mai mossa
+    			else if(board.getPiece(pos7N).getUnmoved()==true){
+    				System.out.println("lungo sotto");
+    				//verifico che non ci siano pezzi tra re e torre
+    				if(board.getPiece(pos1N)==null && board.getPiece(pos2N)==null && board.getPiece(pos3N)==null){
+    					System.out.println("lungo sotto");
+    					cord[1] = pos2N;
     				}
     			}
     		}
     	}
-    	return null;
+    	if(cord[0]==null){
+    		cord[0]=cord[1];
+    		cord[1]=null;
+    	}
+
+
+    	return cord;
     }
 
     public Coord[] moveKing(Board board, Coord pos){
