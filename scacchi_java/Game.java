@@ -35,19 +35,37 @@ public class Game {
                         System.out.println("non puoi muovere questo pezzo");
                         continue;
                     }
+                    /*for(int x=0;pos_Avable[x]!=null;x++){
+                    System.out.println(x+" "+pos_Avable[x].getX()+" "+pos_Avable[x].getY());
+                    }*/
                     //seconda selezione della casella (selezione della casella in cui vuole essere spostata la pedina)
                     command[1]=p1.getCommand();
                     //inserire controllo numeri e lettere
                     for (int x=0; pos_Avable[x]!=null;++x ) {
                                           
                         if((command[1].getX()==pos_Avable[x].getX()) && (command[1].getY()==pos_Avable[x].getY())){
-                          	//mossa della pedina 
-                            board.movePiece(casella.getPosition(), command[1]);
-                            //board.movePiece(casella, command[1]);
-                            board.getPiece(command[1]).setUnmoved(false);
-                            turno=false;
-                             break;
+                            //se la casella e' occupata da un pezzo del proprio colore
+                            //if deprecato.... da cancellare
+                            /*if(board.getPiece(command[1])!=null && board.getPiece(command[1]).getColor()==true){
+                                System.out.println("la casella e' gia occupata");
+                                break;
                             }
+                            else{*/
+                                //marca mossi
+
+                                //mossa della pedina 
+                            	board.movePiece(casella.getPosition(), command[1]);
+                                //board.movePiece(casella, command[1]);
+                                board.getPiece(command[1]).setUnmoved(false);
+                                turno=false;
+                                break;
+                            }
+                        /*
+                        else
+                            System.out.println("mossa non valida1");
+                        continue;   
+                    }
+                }*/
                         else if(pos_Avable[x+1]==null){  
                             System.out.println("coordinate non valide");
                             continue;
@@ -65,7 +83,8 @@ public class Game {
                 //Gets casella from supplied coordinates
                 casella = board.getPiece(command[0]);
                 
-                if (casella != null && casella.getColor() == p2.getColor()){        
+                if (casella != null && casella.getColor() == p2.getColor()){   
+                        
                     pos_Avable = casella.move(board, command[0]);
                     //casella.move(board, command[0]);
                     if(pos_Avable[0]==null){
@@ -76,7 +95,8 @@ public class Game {
                     
                     for (int x=0; pos_Avable[x]!=null;++x ) {
                         
-                        if((command[1].getX()==pos_Avable[x].getX()) && (command[1].getY()==pos_Avable[x].getY())){  
+                        if((command[1].getX()==pos_Avable[x].getX()) && (command[1].getY()==pos_Avable[x].getY())){
+                            
                             board.movePiece(casella.getPosition(), command[1]);
                             //board.movePiece(casella, command[1]);
                             board.getPiece(command[1]).setUnmoved(false);
@@ -89,6 +109,7 @@ public class Game {
                             continue;
                         }
                     }
+                
                 continue;
                 }
             }

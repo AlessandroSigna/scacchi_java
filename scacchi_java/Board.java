@@ -33,12 +33,6 @@ public class Board {
                     casella[7][0] = new Piece("Rook", cordinata[7], true, true);
                 
                 for(int x=0;x<8;x++){
-                	for (int y=2;y<6;y++ ) {
-                		casella[x][y] = null;
-                   	}
-                }
-
-                for(int x=0;x<8;x++){
                     cordinata[x+8]= new Coord(x,1);
                     casella[x][1] = new Piece("Pawn", cordinata[x+8], true, true);
                     cordinata[x+16]= new Coord(x,6);
@@ -105,7 +99,8 @@ public class Board {
 		if(isCastling(init, pos)==true){
         	System.out.println("e' un arrocco!");
         }
-       
+        else 
+        	System.out.println("non e' un arrocco!");
         
 
         //sposta il pezzo
@@ -114,11 +109,6 @@ public class Board {
         
         String promozione;
         Scanner input = new Scanner(System.in);
-
-
-        //qui la verifica dello scacco
-        if(checkmateKing(pos)==true)
-        	System.out.println("SCACCO");
 
         //public boolean isEvolving(Coord init, Coord pos)
         if(this.casella[pos.getX()][pos.getY()].getType()=="Pawn"){
@@ -135,30 +125,6 @@ public class Board {
         }
     }
     
-
-    public boolean checkmateKing(Coord pos){
-    	boolean check = false;
-    	Coord[] pos_Avable;
-    	//posizioni disponibili della casella che ho appena mosso -> a causa della chiamata a move vengono stampate le coordinate della mossa successiva come se fosse l'attuale
-    	pos_Avable = casella[pos.getX()][pos.getY()].move(this, pos);
-	    //scorro le posizioni disponibili
-	    for (int x=0;x<pos_Avable.length;x++ ) {
-	    	//se la casella e' diversa da null (?quindi è occupata?) QUI DA ERRORE
-	    	if(this.casella[(pos_Avable[x].getX())][(pos_Avable[x].getY())]!=null){
-		    	//se nella casella c'è il re
-		    	if ("King".equals(this.casella[pos_Avable[x].getX()][pos_Avable[x].getY()].getType())){
-		    		//se il re è di colore diverso dal pezzo che ho appena mosso
-		    		if(this.casella[pos_Avable[x].getX()][pos_Avable[x].getY()].getColor()!= this.casella[pos.getX()][pos.getY()].getColor()) {
-		    		//allora è scacco
-		    		check=true;
-		    		}
-		    	}
-		    }
-	    }
-    	return check;
-    }
-
-
     //giacomo
     public boolean isEvolving(Coord init, Coord pos){
     	boolean isEvolving = false;

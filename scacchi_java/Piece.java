@@ -1,6 +1,5 @@
 package scacchi_java;
-import java.io.*;
-import java.util.*;
+//import java.util.*;
 public class Piece {
 
     private String type;
@@ -96,49 +95,35 @@ public class Piece {
 
     public Coord[] move(Board board, Coord pos){
         Coord[] cord = new Coord[10];
-        int dim=0, dim2=0, y=0;
         Coord[] cord2 = new Coord[2];
-        if("Knight".equals(this.type)){
+        if(this.type == "Knight"){
             return moveKnight(board, pos);
         } 
         else if("Rook".equals(this.type)){
             return moveRook(board, pos);
         } 
         else if("King".equals(this.type)){
-        	
-            dim=moveKing(board, pos).length;
-            //dim2=castlingKing(board, pos).length;
-            
-           
-            cord=moveKing(board, pos);
-            cord2=castlingKing(board, pos);
-            for(int x=0;cord2[x]!=null;x++){
-                dim2++;
-            }
-            Coord[] cord5 = new Coord[dim+dim2];
-            System.out.println("dim "+dim+"dim2 "+dim2);
-            for (int z=0;z<(dim+dim2);z++) {
-                if(z<dim) 
-                    cord5[z]=cord[z];
-                else    
-                    cord5[z]=cord2[z];                
-            }
+        	cord=moveKing(board, pos);
+        	int x=0;
+        	while(cord[x]!=null){
+        		x++;	
+        	}
 
-            System.out.println("dim "+dim+"dim2 "+dim2);
-            /*if(cord2!=null){
-                cord5[dim]=cord2[0];
-            if(cord2[1]!=null){
-                cord5[dim+1]=cord2[1];
-          */
-            return cord5;
+        cord2=castlingKing(board, pos);
+        cord[x]=cord2[0];
+        cord[x+1]=cord2[1];
+
+        if(cord2[0]!=null)
+        	System.out.println(cord2[0].getX()+" "+cord2[0].getY());
+        if(cord2[1]!=null)                  	
+            System.out.println(cord2[1].getX()+" "+cord2[1].getY());   
+            return cord;
         } 
         else if("Queen".equals(this.type)){
             return moveQueen(board, pos);
         } 
         else if("Bishop".equals(this.type)){
-            Coord[] coordinata = moveBishop(board, pos);
-            System.out.println(coordinata.length);
-            return coordinata;
+            return moveBishop(board, pos);
         } 
         else if("Pawn".equals(this.type)){
             return movePawn(board, pos);
@@ -339,7 +324,7 @@ public class Piece {
                     }
                 }
 
-                y=0;
+                y=1;
                 for(int x=0;x<64;x++){
                 	if(cord[x]!=null){
                 		System.out.println(cord[x].getX()+" "+cord[x].getY());
@@ -348,12 +333,11 @@ public class Piece {
                 }
 
                 Coord[] cord5 = new Coord[y];
-                for(int alfa=0;alfa<y;alfa++){
+                for(int alfa=0;alfa<=y;alfa++){
                 	cord5[alfa]=cord[alfa];
                 }
-                System.out.println(cord5.length);
+
                 return cord5;  
-                
     }
 
 
@@ -361,7 +345,7 @@ public class Piece {
 
     public Coord[] castlingKing(Board board, Coord pos){
     	
-    	Coord[] cord = new Coord[3];
+    	Coord[] cord = new Coord[2];
     	Coord pos0=new Coord(0,0);
     	Coord pos1=new Coord(1,0);
     	Coord pos2=new Coord(2,0);
@@ -376,6 +360,7 @@ public class Piece {
     	Coord pos5B=new Coord(5,7);
     	Coord pos6B=new Coord(6,7);
     	Coord pos7B=new Coord(7,7);
+
     	//sezione sopra( neri nella scacchiera)
     	if(board.getPiece(pos).getColor()==true){
     		//verifico che il re non si sia mai mosso
@@ -421,28 +406,27 @@ public class Piece {
     			}
     		}
     	}
-            
-    	    int y = 0;
-    	    if(cord[0]==null){
-    		  cord[0]=cord[1];
-    		  cord[1]=null;
-    	    }
+    	int y = 1;
+    	if(cord[0]==null){
+    		cord[0]=cord[1];
+    		cord[1]=null;
+    	}
 
-            
-            for(int x=0;cord[x]!=null;x++){
-                System.out.println(cord[x].getX()+" "+cord[x].getY());
-                y++;    
-            }
-            
-
-            Coord[] cord5 = new Coord[y];
-            System.out.println(cord5.length);
-            for(int alfa=0;alfa<y;alfa++){
-                cord5[alfa]=cord[alfa];
-            }
-
-            return cord; 
+    	for(int x=0;x<2;x++){
+            if(cord[x]!=null){
+                y++;
+            }        
+        }
         
+
+        Coord[] cord5 = new Coord[y];
+        
+        for(int alfa=0;alfa<y;alfa++){
+            cord5[alfa]=cord[alfa];
+        }
+
+        return cord5; 
+
     }
 
     public Coord[] moveKing(Board board, Coord pos){
@@ -472,7 +456,7 @@ public class Piece {
             else
                 continue;
         }
-        y=0;
+        y=1;
         for(int x=0;x<8;x++){
             if(cord2[x]!=null){
             y++;
@@ -484,10 +468,8 @@ public class Piece {
         for(int alfa=0;alfa<y;alfa++){
             cord5[alfa]=cord2[alfa];
         }
-        System.out.println(cord5.length);
-        return cord5;
 
-       
+        return cord5;
     }
 
 
@@ -587,8 +569,7 @@ public class Piece {
                         break;
                     }
                 }
-
-                y=0;
+                y=1;
                 for(int x=0;x<64;x++){
                 	if(cord[x]!=null){
 	                	System.out.println(cord[x].getX()+" "+cord[x].getY());
@@ -603,9 +584,8 @@ public class Piece {
         		for(int alfa=0;alfa<y;alfa++){
             		cord5[alfa]=cord[alfa];
         		}
-                System.out.println(cord5.length);
+
         return cord5;
-      
       
     }
 
@@ -758,7 +738,7 @@ public class Piece {
             
         }
 
-        y=0;
+        y=1;
 
         for(int x=0;x<4;x++){
             if(cord[x]!=null){
@@ -770,9 +750,10 @@ public class Piece {
         for(int alfa=0;alfa<y;alfa++){
             cord5[alfa]=cord[alfa];
         }
-        System.out.println(cord5.length);
+
         return cord5;
     
+        //DA QUI PROMOZIONE
 
 
 
@@ -877,7 +858,7 @@ public class Piece {
                         break;
                     }
                 }
-        y=0;
+        y=1;
           
         for(int x=0;x<64;x++){
             if(cord[x]!=null){
@@ -892,7 +873,7 @@ public class Piece {
         for(int alfa=0;alfa<y;alfa++){
             cord5[alfa]=cord[alfa];
         }
-        System.out.println(cord5.length);
+
         return cord5;
     }
 
@@ -923,11 +904,13 @@ public class Piece {
             else
                 continue;
         }
-        y=0;
+        y=1;
 
         for(int x=0;x<8;x++){
-            if(cord2[x]!=null)
-                y++;
+            if(cord2[x]!=null){
+            System.out.println(cord[x].getX()+" "+cord[x].getY());
+            y++;
+            }        
         }
         
 
@@ -936,7 +919,7 @@ public class Piece {
         for(int alfa=0;alfa<y;alfa++){
             cord5[alfa]=cord2[alfa];
         }
-        System.out.println(cord5.length);
+
         return cord5;
 
     }
