@@ -1,0 +1,126 @@
+Nella fase di setup della pagina desidero ricevere un json simile a questo
+
+{
+    page: "tutto il codice html",
+    turno: "0-1",
+    numeroPedineConMosse: "1-16",
+    
+coordinatePedineConMosse: [ {posizioneIniziale: "A1"}, { numeroMosse: "un numero" }, 
+{ posizioneFinale: [{coord: "B1"}, { coord: "B2"} ] } ]
+}
+
+
+
+Con il contenuto di page scarico le posizioni di tutti i pezzi della scacchiera 
+così come hai fatto l'altra volta.
+Se "turno" è uguale a 0 allora non devo registrare alcun click, 
+viceversa devo registrare i click sulle pedine che dispongono mosse.
+
+Le pedine che dispongono mosse sono elencate nel json assieme a tutte le possibili caselle in cui ciascuna di esse può andare.
+
+Pensavo di:
+    -scorrere il vettore delle posizioni iniziali;
+    
+-per ciascuna posizione iniziale, ciclare il corrispettivo vettore di posizioni finali;
+    
+-a ciascun div corrispondente ad una posizione finale, aggiungere la classe "posizioneIniziale" in analisi;
+    
+-gestire gli eventi registraClick
+Non so nulla di javasript, questo è uno pseudocodice
+
+
+    
+        
+
+var numeroPedineConMosse = jobj.numeroPedineConMosse;
+        
+for(var i = 0; i < numeroPedineConMosse; ++i)
+        
+{
+            
+var posizioneIniziale = jobj.coordinatePedineConMosse[i].posizioneIniziale;
+            
+var numeroMosse = jobj.coordinatePedineConMosse[i].numeroMosse;
+            
+for(var j = 0; i < numeroMosse; ++j)
+            
+{
+                
+var posizioneFinale = jobj.coordinatePedineConMosse[i].posizioneFinale[j];
+                
+registraMossaDisponibile(posizioneIniziale, posizioneFinale);
+            
+}
+            
+registraClick(posizioneIniziale);
+        
+}
+
+
+
+
+function registraMossaDisponibile(posizioneIniziale, posizioneFinale)
+{
+    
+$("#"+posizioneFinale).addClass(posizioneIniziale);
+}
+
+
+
+function registraClick(posizioneIniziale)
+{
+    
+$("#"+posizioneIniziale).addClass(canMove);
+}
+
+
+$(".chessboard div").click(function(event)
+{
+    
+if(isChecked == true)
+    
+{
+        if(this.id == pieceID)
+		
+{
+			
+$(this).removeClass("bg_yellow");
+			
+var elements = document.getElementsByClassName(this.id);
+            
+for(i in elements)
+                
+elements[i].removeClass("bg_green");
+			
+isChecked = false;
+		}
+        
+else if($(this).hasClass("bg_green"))
+        {
+            
+
+//IMPLEMENTARE LA CHIAMATA ALLA SERVLET PER MUOVERE LA PEDINA. IL RISULTATO SARÀ UN BOOLEANO,
+            
+
+//SE TRUE DISABILITO TUTTE LE INTERAZIONI CON LA PAGINA
+        
+}
+    }
+    
+else
+    {
+        
+var elements = document.getElementsByClassName(this.id);
+        
+for(i in elements)
+            
+elements[i].addClass("bg_green");
+        
+$(this).addClass(bg_yellow);
+        
+pieceID = this.id;
+        
+isChecked = true;
+    
+}
+});
