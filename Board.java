@@ -5,8 +5,11 @@ public class Board {
     
     public final int DIM = 8;
     //private final String[] backline = {"Piece", "Piece", "Piece", "Piece", "Piece", "Piece", "Piece", "Piece"};
-    Piece casella[][] = new Piece[8][8];
+    public Piece casella[][] = new Piece[8][8];
     Coord cordinata[] = new Coord[32];
+    boolean whitecheck = false;
+    boolean blackcheck = false;
+    Piece re = new Piece("King", cordinata[4], true, true);;
     //Sets up the board
    	public Board()
     {
@@ -95,7 +98,7 @@ public class Board {
     }
     //casella iniziale e casella finale
     //Moves piece to given coordinates
-    public void movePiece(Coord init, Coord pos)
+    public boolean movePiece(Coord init, Coord pos)
     //public void movePiece(Piece piece, Coord pos)
     {
     	
@@ -106,61 +109,152 @@ public class Board {
         	System.out.println("e' un arrocco!");
         }
        
+        //prevedo il suicidio del re
+        if("King".equals(piece.getType())){
+	        for (int x=0;x<DIM;x++) {
+				for (int y=0;y<DIM;y++) {
+					if(this.casella[x][y]!=null){
+						if(piece.getColor()!=this.casella[x][y].getColor()){
+							for (int z=0;z<(this.casella[x][y].move(this,this.casella[x][y].getPosition()).length);z++ ) {
+								if ("Pawn".equals(this.casella[x][y].getType()) && (this.casella[x][y].move(this, this.casella[x][y].getPosition())[z].getY()==(y+1) ||
+									 this.casella[x][y].move(this, this.casella[x][y].getPosition())[z].getY()==(y-1))){ 	
+									continue;
+								}
+								else if(this.casella[x][y].move(this, this.casella[x][y].getPosition())[z].getX()==pos.getX() &&
+									 this.casella[x][y].move(this, this.casella[x][y].getPosition())[z].getY()==pos.getY()){
+									System.out.println("vuoi fare suicidare il re??");
+									return false;
+								}
+							}
+						}
+					}	        			        		
+	        	}
+        	}
+        }
         
 
+        
+        Piece temp = this.casella[pos.getX()][pos.getY()];
         //sposta il pezzo
         this.casella[piece.getPosition().getX()][piece.getPosition().getY()] = null;
         this.casella[pos.getX()][pos.getY()] = piece.setPosition(pos);
         
+        //trova la posizione del re avversario
+        for (int x=0;x<DIM;x++) {
+			for (int y=0;y<DIM;y++) {
+				if(this.casella[x][y]!=null){
+					if(piece.getColor()==this.casella[x][y].getColor()){
+				        if("King".equals(casella[x][y].getType())){
+				        	re = this.casella[x][y];
+				        }
+				    }
+			    }
+			}
+		}
+        
+        //controllo che la mossa che faccio levi dalla merda il re
+        // da verificare con la pedina che va avanti
+
+        for (int x=0;x<DIM;x++) {
+			for (int y=0;y<DIM;y++) {
+				if(this.casella[x][y]!=null){
+					if(piece.getColor()!=this.casella[x][y].getColor()){
+						for (int z=0;z<(this.casella[x][y].move(this,this.casella[x][y].getPosition()).length);z++ ) {
+							if(this.casella[x][y].move(this,this.casella[x][y].getPosition())[z].getX() == re.getPosition().getX() && 
+								this.casella[x][y].move(this,this.casella[x][y].getPosition())[z].getY() == re.getPosition().getY()){
+								System.out.println("non puoi fare questa mossa perche metti il re nella merda");
+								this.casella[init.getX()][init.getY()] = piece.setPosition(init);
+        						this.casella[pos.getX()][pos.getY()] = temp;
+								return false;
+								//se nessuna mossa è disponibile, allora stallo, se prima era scacco e nessuna mossa è disponibile allora scacco matto
+							}
+						}
+					}
+				}	        			        		
+	       	}
+        }
+
+
         String promozione;
         Scanner input = new Scanner(System.in);
+        
+        //qui funzione che verifica se è ancora in scacco e mette check a false
+        //bianco
 
 
         //qui la verifica dello scacco
-        if(checkmateKing(pos)==true)
+      /*  if(checkmateKing(pos)==true){
         	System.out.println("SCACCO");
-
-        //public boolean isEvolving(Coord init, Coord pos)
-        if(this.casella[pos.getX()][pos.getY()].getType()=="Pawn"){
-        	if (pos.getY()==7) {
-        		System.out.println("ecco la promozione per il bianco");
-        		promozione=input.nextLine();
-        		this.casella[pos.getX()][pos.getY()].setType(promozione);
+        	//bianco
+        	if(piece.getColor()==false){
+        		this.blackcheck=true;
         	}
-        	else if (pos.getY()==0) {
-        		System.out.println("ecco la promozione per il nero");
-        		promozione=input.nextLine();
-        		this.casella[pos.getX()][pos.getY()].setType(promozione);
+        	else if(piece.getColor()==true) {
+        		this.whitecheck=true;	
         	}
         }
+*/
+        //public boolean isEvolving(Coord init, Coord pos)
+        if(this.casella[pos.getX()][pos.getY()].getType()=="Pawn"){
+        	if (pos.getY()==7 || pos.getY()==0) {
+        		System.out.println("ecco la promozione");
+        		promozione=input.nextLine();
+        		this.casella[pos.getX()][pos.getY()].setType(promozione);
+        	}
+        	/*else if (pos.getY()==0) {
+        		System.out.println("ecco la promozione");
+        		promozione=input.nextLine();
+        		this.casella[pos.getX()][pos.getY()].setType(promozione);
+        	}*/
+        }
+        return true;
     }
     
-
-    public boolean checkmateKing(Coord pos){
+    //board colore
+    public boolean checkmateKing(boolean color){
     	boolean check = false;
     	Coord[] pos_Avable;
-    	//posizioni disponibili della casella che ho appena mosso -> a causa della chiamata a move vengono stampate le coordinate della mossa successiva come se fosse l'attuale
-    	pos_Avable = casella[pos.getX()][pos.getY()].move(this, pos);
-	    //scorro le posizioni disponibili
-	    for (int x=0;x<pos_Avable.length;x++ ) {
-	    	//se la casella e' diversa da null (?quindi è occupata?) QUI DA ERRORE
-	    	if(this.casella[(pos_Avable[x].getX())][(pos_Avable[x].getY())]!=null){
-		    	//se nella casella c'è il re
-		    	if ("King".equals(this.casella[pos_Avable[x].getX()][pos_Avable[x].getY()].getType())){
-		    		//se il re è di colore diverso dal pezzo che ho appena mosso
-		    		if(this.casella[pos_Avable[x].getX()][pos_Avable[x].getY()].getColor()!= this.casella[pos.getX()][pos.getY()].getColor()) {
-		    		//allora è scacco
-		    		check=true;
-		    		}
-		    	}
-		    }
-	    }
+    	Piece king = null;
+    	//trova il re del colore scelto
+    	for (int x=0;x<DIM;x++) {
+			for (int y=0;y<DIM;y++) {
+				if(this.casella[x][y]!=null){
+					if(color==this.casella[x][y].getColor()){
+				        if("King".equals(casella[x][y].getType())){
+				        	king = this.casella[x][y];
+				        }
+				    }
+			    }
+			}
+		}
+		//verifica che è sotto scacco
+    	//confronto le caselle di colore opposto con la posizione del re e se è uguale ritorno true ovvero scacco al mio re di colore color
+    	for (int x=0;x<DIM;x++) {
+			for (int y=0;y<DIM;y++) {
+				if(this.casella[x][y]!=null){
+			    	if(color!=this.casella[x][y].getColor()){
+						for (int z=0;z<(this.casella[x][y].move(this,this.casella[x][y].getPosition()).length);z++ ) {	
+							if ("Pawn".equals(this.casella[x][y].getType()) && (this.casella[x][y].move(this, this.casella[x][y].getPosition())[z].getX()==(x) &&
+									(this.casella[x][y].move(this, this.casella[x][y].getPosition())[z].getY()==(y+1) ||
+									 this.casella[x][y].move(this, this.casella[x][y].getPosition())[z].getY()==(y-1)))){ 
+								continue;
+								}
+
+							else if(this.casella[x][y].move(this, this.casella[x][y].getPosition())[z].getX()==king.getPosition().getX() &&
+									 this.casella[x][y].move(this, this.casella[x][y].getPosition())[z].getY()==king.getPosition().getY()){
+								check = true;
+							}
+						}
+					}
+				}
+			}
+		}
     	return check;
     }
 
 
-    //giacomo
-    public boolean isEvolving(Coord init, Coord pos){
+    //giacomo cordinata finale 
+    public boolean isEvolving(Coord pos){
     	boolean isEvolving = false;
 
     	if("Pawn".equals(this.casella[pos.getX()][pos.getY()].getType())){

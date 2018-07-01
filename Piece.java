@@ -88,7 +88,7 @@ public class Piece {
                 code = 0;
                 System.out.println("tipo pedina non previsto");
         }
-        code = color?code+6:code; //il codice delle pedine nere è +6 rispetto quello delle bianche
+        code = color?code+6:code; //il codice delle pedine nere e' +6 rispetto quello delle bianche
         return "&#" + code.toString() + ";"; 
     }
 
@@ -116,29 +116,24 @@ public class Piece {
                 dim2++;
             }
             Coord[] cord5 = new Coord[dim+dim2];
-            System.out.println("dim "+dim+"dim2 "+dim2);
             for (int z=0;z<(dim+dim2);z++) {
                 if(z<dim) 
                     cord5[z]=cord[z];
                 else    
                     cord5[z]=cord2[z];                
             }
-
-            System.out.println("dim "+dim+"dim2 "+dim2);
             /*if(cord2!=null){
                 cord5[dim]=cord2[0];
             if(cord2[1]!=null){
                 cord5[dim+1]=cord2[1];
-          */
+            */
             return cord5;
         } 
         else if("Queen".equals(this.type)){
             return moveQueen(board, pos);
         } 
         else if("Bishop".equals(this.type)){
-            Coord[] coordinata = moveBishop(board, pos);
-            System.out.println(coordinata.length);
-            return coordinata;
+            return moveBishop(board, pos);
         } 
         else if("Pawn".equals(this.type)){
             return movePawn(board, pos);
@@ -152,7 +147,7 @@ public class Piece {
 
     public Coord[] moveQueen(Board board, Coord pos){
         
-        System.out.println("stai muovendo la regina "+pos.getX()+" "+pos.getY() + " , la regina puo andare");
+        //System.out.println("stai muovendo la regina "+pos.getX()+" "+pos.getY() + " , la regina puo andare");
         Coord[] cord = new Coord[64];
         Coord pos2=new Coord(0,0);
         int z=0, y=0;
@@ -208,7 +203,7 @@ public class Piece {
                     //se pos2 e' fuori dal tavolo di gioco esci
                     if(pos2.getX()<0 || pos2.getX()>8 || pos2.getY()<0 || pos2.getY()>8)
                         break;
-                    //altrimenti se non c'è nessun pezzo su pos2 o il colore del pezzo su pos2 è diverso dal colore del pezzo su pos 
+                    //altrimenti se non c'e' nessun pezzo su pos2 o il colore del pezzo su pos2 e' diverso dal colore del pezzo su pos 
                     else if((board.getPiece(pos2)==null)) {
                         cord[z]= new Coord(pos2.getX(),pos2.getY());
                         //System.out.println(cord[z].getX()+" "+cord[z].getY());
@@ -299,7 +294,7 @@ public class Piece {
                     //se pos2 e' fuori dal tavolo di gioco esci
                     if(pos2.getX()<0 || pos2.getX()>8 || pos2.getY()<0 || pos2.getY()>8)
                         break;
-                    //altrimenti se non c'è nessun pezzo su pos2 o il colore del pezzo su pos2 è diverso dal colore del pezzo su pos 
+                    //altrimenti se non c'e' nessun pezzo su pos2 o il colore del pezzo su pos2 e' diverso dal colore del pezzo su pos 
                     else if((board.getPiece(pos2)==null)) {
                         cord[z]= new Coord(pos2.getX(),pos2.getY());
                         //System.out.println(cord[z].getX()+" "+cord[z].getY());
@@ -342,7 +337,7 @@ public class Piece {
                 y=0;
                 for(int x=0;x<64;x++){
                 	if(cord[x]!=null){
-                		System.out.println(cord[x].getX()+" "+cord[x].getY());
+                		//System.out.println(cord[x].getX()+" "+cord[x].getY());
                 		y++;
                 	}        
                 }
@@ -351,7 +346,7 @@ public class Piece {
                 for(int alfa=0;alfa<y;alfa++){
                 	cord5[alfa]=cord[alfa];
                 }
-                System.out.println(cord5.length);
+                //System.out.println("la dimensione dell array e' "+cord5.length);
                 return cord5;  
                 
     }
@@ -430,13 +425,13 @@ public class Piece {
 
             
             for(int x=0;cord[x]!=null;x++){
-                System.out.println(cord[x].getX()+" "+cord[x].getY());
+                //System.out.println(cord[x].getX()+" "+cord[x].getY());
                 y++;    
             }
             
 
             Coord[] cord5 = new Coord[y];
-            System.out.println(cord5.length);
+            //System.out.println("la dimensione dell array e' "+cord5.length);
             for(int alfa=0;alfa<y;alfa++){
                 cord5[alfa]=cord[alfa];
             }
@@ -449,7 +444,7 @@ public class Piece {
         Coord[] cord = new Coord[8];
         Coord[] cord2 = new Coord[8];
         int y=0;
-        System.out.println("stai muovendo il re in " +pos.getX()+" "+pos.getY() + " , il re puo andare");
+        //System.out.println("stai muovendo il re in " +pos.getX()+" "+pos.getY() + " , il re puo andare");
         cord[0]= new Coord(pos.getX()+1,pos.getY()+1);
         cord[1]= new Coord(pos.getX(),pos.getY()+1);
         cord[2]= new Coord(pos.getX()-1,pos.getY()+1);
@@ -462,7 +457,7 @@ public class Piece {
         for(int x=0;x<8;x++){
             if(cord[x].getX()>=0 && cord[x].getX()<8 && cord[x].getY()>=0 && cord[x].getY()<8){
                 if(board.getPiece(cord[x])==null || board.getPiece(cord[x]).getColor()!=board.getPiece(pos).getColor()){
-                    System.out.println(cord[x].getX()+" "+cord[x].getY());
+                    //System.out.println(cord[x].getX()+" "+cord[x].getY());
                     cord2[y]=cord[x];
                     y++;
                 }
@@ -484,7 +479,7 @@ public class Piece {
         for(int alfa=0;alfa<y;alfa++){
             cord5[alfa]=cord2[alfa];
         }
-        System.out.println(cord5.length);
+        //System.out.println("la dimensione dell array e' "+cord5.length);
         return cord5;
 
        
@@ -494,7 +489,7 @@ public class Piece {
 
     public Coord[] moveBishop(Board board, Coord pos){
         
-        System.out.println("stai muovendo l'alfiere "+pos.getX()+" "+pos.getY() + " , l'alfiere puo andare");
+        //System.out.println("stai muovendo l'alfiere "+pos.getX()+" "+pos.getY() + " , l'alfiere puo andare");
         Coord[] cord = new Coord[64];
         Coord pos2=new Coord(0,0);
         int z=0, y=0;
@@ -547,7 +542,7 @@ public class Piece {
                     //se pos2 e' fuori dal tavolo di gioco esci
                     if(pos2.getX()<0 || pos2.getX()>8 || pos2.getY()<0 || pos2.getY()>8)
                         break;
-                    //altrimenti se non c'è nessun pezzo su pos2 o il colore del pezzo su pos2 è diverso dal colore del pezzo su pos 
+                    //altrimenti se non c'e' nessun pezzo su pos2 o il colore del pezzo su pos2 e' diverso dal colore del pezzo su pos 
                     else if((board.getPiece(pos2)==null)) {
                         cord[z]= new Coord(pos2.getX(),pos2.getY());
                         //System.out.println(cord[z].getX()+" "+cord[z].getY());
@@ -591,7 +586,7 @@ public class Piece {
                 y=0;
                 for(int x=0;x<64;x++){
                 	if(cord[x]!=null){
-	                	System.out.println(cord[x].getX()+" "+cord[x].getY());
+	                	//System.out.println(cord[x].getX()+" "+cord[x].getY());
 	                	y++;
                 	}        
                 }
@@ -603,7 +598,7 @@ public class Piece {
         		for(int alfa=0;alfa<y;alfa++){
             		cord5[alfa]=cord[alfa];
         		}
-                System.out.println(cord5.length);
+                //System.out.println("la dimensione dell array e' "+cord5.length);
         return cord5;
       
       
@@ -619,7 +614,7 @@ public class Piece {
         
         int y=0;
 
-        System.out.println("stai muovendo la pedina "+pos.getX()+" "+pos.getY() + " , la pedina puo andare");
+        //System.out.println("stai muovendo la pedina "+pos.getX()+" "+pos.getY() + " , la pedina puo andare");
         //seleziona colore
         if(board.getPiece(pos).getColor()==true){
             
@@ -650,7 +645,7 @@ public class Piece {
                 //System.out.println("alla posizione 1 "+cord[0].getX()+" "+cord[0].getY());
                 //avanza di uno
                 if(board.getPiece(cord[0])!=null){
-                    System.out.println("sta");
+                  
                     cord[0]=null;
                     cord[1]=null;}
                 
@@ -681,10 +676,10 @@ public class Piece {
                     }
                 }
             }
-            else
+           /* else
             {
                 System.out.println("Non posso muovermi, fine scacchiera");
-            }
+            }*/
 
             // codice promozione
         }
@@ -721,7 +716,7 @@ public class Piece {
                 
                 //avanza di uno
                 if(board.getPiece(cord[0])!=null){
-                    System.out.println("sta");
+               
                     cord[0]=null;
                     cord[1]=null;}
                 
@@ -749,34 +744,32 @@ public class Piece {
                     }
                 }
             }
-            else
+          /* else
             {
                 System.out.println("Non posso muovermi, fine scacchiera");
-            }
-
+            }*/
             // codice promozione
-            
         }
 
         y=0;
+       
 
         for(int x=0;x<4;x++){
             if(cord[x]!=null){
-            	System.out.println(cord[x].getX()+" "+cord[x].getY());
-            	y++;}
+            	//System.out.println(cord[x].getX()+" "+cord[x].getY());
+            	y++;
+            }
         }
         Coord[] cord5 = new Coord[y];
-        
-        for(int alfa=0;alfa<y;alfa++){
-            cord5[alfa]=cord[alfa];
+        y=0;
+        for(int alfa=0;alfa<4;alfa++){
+            if(cord[alfa]!=null){
+                cord5[y]=cord[alfa];
+            y++;
+            }
         }
-        System.out.println(cord5.length);
+        //System.out.println("la dimensione dell array e' "+cord5.length);
         return cord5;
-    
-
-
-
-    
     }
 
 
@@ -785,7 +778,7 @@ public class Piece {
         Coord[] cord = new Coord[64];
         Coord pos2=new Coord(0,0);
         int z=0, y=0;
-        System.out.println("stai muovendo la torre "+pos.getX()+" "+pos.getY() + " , la torre puo andare");
+        //System.out.println("stai muovendo la torre "+pos.getX()+" "+pos.getY() + " , la torre puo andare");
             
             
                 //in alto
@@ -837,7 +830,7 @@ public class Piece {
                     //se pos2 e' fuori dal tavolo di gioco esci
                     if(pos2.getX()<0 || pos2.getX()>8 || pos2.getY()<0 || pos2.getY()>8)
                         break;
-                    //altrimenti se non c'è nessun pezzo su pos2 o il colore del pezzo su pos2 è diverso dal colore del pezzo su pos 
+                    //altrimenti se non c'e' nessun pezzo su pos2 o il colore del pezzo su pos2 e' diverso dal colore del pezzo su pos 
                     else if((board.getPiece(pos2)==null)) {
                         cord[z]= new Coord(pos2.getX(),pos2.getY());
                         //System.out.println(cord[z].getX()+" "+cord[z].getY());
@@ -881,7 +874,7 @@ public class Piece {
           
         for(int x=0;x<64;x++){
             if(cord[x]!=null){
-            	System.out.println(cord[x].getX()+" "+cord[x].getY());
+            	//System.out.println(cord[x].getX()+" "+cord[x].getY());
             	y++;
            }        
         }
@@ -892,7 +885,7 @@ public class Piece {
         for(int alfa=0;alfa<y;alfa++){
             cord5[alfa]=cord[alfa];
         }
-        System.out.println(cord5.length);
+        //System.out.println("la dimensione dell array e' "+cord5.length);
         return cord5;
     }
 
@@ -900,7 +893,7 @@ public class Piece {
         Coord[] cord = new Coord[8];
         Coord[] cord2 = new Coord[8];
         int y=0;
-        System.out.println("stai muovendo il cavallo in " +pos.getX()+" "+pos.getY() + " , il cavallo puo andare");
+        //System.out.println("stai muovendo il cavallo in " +pos.getX()+" "+pos.getY() + " , il cavallo puo andare");
         cord[0]= new Coord(pos.getX()+2,pos.getY()-1);
         cord[1]= new Coord(pos.getX()+2,pos.getY()+1);
         cord[2]= new Coord(pos.getX()+1,pos.getY()-2);
@@ -913,7 +906,7 @@ public class Piece {
         for(int x=0;x<8;x++){
             if(cord[x].getX()>=0 && cord[x].getX()<8 && cord[x].getY()>=0 && cord[x].getY()<8){
                 if(board.getPiece(cord[x])==null || board.getPiece(cord[x]).getColor()!=board.getPiece(pos).getColor()){
-                    System.out.println(cord[x].getX()+" "+cord[x].getY());
+                    //System.out.println(cord[x].getX()+" "+cord[x].getY());
                     cord2[y]=cord[x];
                     y++;
                 }
@@ -936,7 +929,7 @@ public class Piece {
         for(int alfa=0;alfa<y;alfa++){
             cord5[alfa]=cord2[alfa];
         }
-        System.out.println(cord5.length);
+        //System.out.println("la dimensione dell array e' "+cord5.length);
         return cord5;
 
     }

@@ -1,0 +1,234 @@
+<html>
+    <head>
+	    <meta charset="UTF-8"> 
+			<title>Chessboard</title>
+			<style type="text/css">
+				.bg_black
+				{
+					float: left;
+					width: 80px;
+					height: 80px;
+					background-color: #999;
+					font-size:50px;
+					text-align:center;
+					display: table-cell;
+					vertical-align:middle;
+				}
+
+				
+				.chessboard
+				{
+					width: 640px;
+					height: 640px;
+					margin: 20px;
+					border: 25px solid #333;
+				}
+
+
+				.bg_white
+				{
+					float: left;
+					width: 80px;
+					height: 80px;
+					background-color: #fff;
+					font-size:50px;
+					text-align:center;
+					display: table-cell;
+					vertical-align:middle;
+				}
+
+				.bg_green 
+				{
+					float: left;
+					width: 80px;
+					height: 80px;
+					background-color: #00ff00 !important;
+					font-size:50px;
+					text-align:center;
+					display: table-cell;
+					vertical-align:middle;
+				}
+
+				.bg_yellow
+				{
+					float: left;
+					width: 80px;
+					height: 80px;
+					background-color: #ffff00 !important;
+					font-size:50px;
+					text-align:center;
+					display: table-cell;
+					vertical-align:middle;
+				}
+
+			</style>
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+			<!--<script src="modules.js"></script> <!--Change this-->
+			<script type="text/javascript">
+				var isChecked = false;
+				var pieceChecked;
+				var pieceText = "";
+				var pieceID;
+				var jobj = "";
+				var coordinatePedineConMosse = null;
+				var callbacksRegistered = false;
+
+				function RequestChessboardAndData()
+				{
+					var formData = { 'code': 'SETUP', 'partido': 34 };
+					$.ajax(
+					{
+						url: "http://localhost:8080/STGI/game",
+						type: "post",
+						data: formData,
+						success: function(d)
+						{
+							alert(d);
+							if(d == null || d=="")
+							{
+								alert("Errore nella tabella ricevuta");
+							}
+							else
+							{
+								//parsifico la risposta
+								var obj = JSON.parse(d);
+								$( ".chessboard" ).append(obj.page);
+								if(obj.turno == 1)
+								{
+									alert("È il tuo turno!");
+									coordinatePedineConMosse = obj.coordinatePedineConMosse;
+								}
+								//Registriamo la callback una volta sola al primo setup, 
+								//solo dopo che la scacchiera è stata composta posso registrare le callback dei click sulle singole caselle
+								if(!callbacksRegistered)
+								{
+									RegisterCallbacks();	//DA TESTARE: è possibile che occorra aspettare qualche ms prima di registrare le callback perché magari l'append viene eseguita in modo asincrono	
+								}
+								
+							}
+							
+						},
+						error: function (err) {
+							alert("AJAX error in request: " + JSON.stringify(err, null, 2));
+						}
+					});
+				}
+
+				$(window).load(function (){
+					RequestChessboardAndData()
+				});
+
+				/*
+				Per capire se una pedina si può muovere facciamo un check su una mappa popolata dalle info 
+				arrivate dal server col json del setup 
+				*/
+				function RegisterCallbacks(){
+					alert("registerCallbacks Chaiamta!");
+					$(".chessboard div").click(function(event)
+					{    //evento click su un tassello di gioco
+						event.preventDefault();
+						if(isChecked == true)
+						{
+							if($(this).hasClass("bg_green"))	//ho già selezionato una pedina da muovere
+							{
+								//ho cliccato su una corretta posizione finale
+								//invio la mossa al server nella forma
+								/*
+								{
+								"code": "MOVE_DONE",
+								"posIniziale": "coordinate iniziali del pezzo mosso",
+								"posFinale": "coordinate finali della posizione raggiunta"
+								}
+								*/
+								var formData = { 'code': 'MOVE_DONE', 'posIniziale': pieceChecked.attr('id'), 'posFinale' : $(this).attr('id') };
+								$.ajax(
+								{
+									url: "localhost:8080/STGI/game",
+									type: "post",
+									data: formData,
+									success: function(d)
+									{
+										var jsonres = JSON.parse(d);
+										if(jsonres.result==3)
+										{
+											alert("DEVI EVOLVERE!");
+										}
+										else if(jsonres.result==6)
+										{
+											alert("IMPLEMENTA L'ARROCCO!");
+										}
+										else
+										{
+											alert("DEVI RESETTARE LA SCACCHIERA");
+											ALERT("DEVI AGGIORNARE LA SCACCHIERA");
+										}
+										/*if(d=="true")
+										{
+
+											//resetto i colori delle caselle e le variabili
+											$(".bg_green").removeClass("bg_green");
+											$(".bg_yellow").removeClass("bg_yellow");
+											coordinatePedineConMosse = null;
+											isChecked = false;
+											pieceChecked = null;
+
+										}
+										else
+										{
+											//non credo debba essere fatto nulla qui, non resettando le variabili il giocatore può ancora muovere
+										}*/
+									},
+									error: function (err) {
+										alert("AJAX error in request: " + JSON.stringify(err, null, 2));
+									}
+								});
+							}
+						}
+						else	//primo click su un div della scacchiera, vado avanti solo se è una delle pedine che si può muovere
+						{
+							pieceChecked = $(this);
+							var posFinali = AvailableMoves(pieceChecked.attr('id'));
+							if(posFinali != null )
+							{
+								alert("MI POSSO MUOVERE!");
+								//se ci sono mosse disponibili per la pedina cliccata posso muovere la pedina
+								isChecked = true;
+								// coloro di giallo la pedina cliccata 
+								pieceChecked.addClass("bg_yellow");
+								//e di verde le possibili destinazioni
+								posFinali.forEach(function(element) {
+									$("#"+element.coord).addClass("bg_green");
+								});
+							}
+						}
+					});
+				};
+
+				function AvailableMoves(id)
+				{
+					alert("AvailableMoves chiamata!");
+					if(coordinatePedineConMosse!=null)
+					{
+						alert("Cerco Mosse");
+						coordinatePedineConMosse.forEach(function(element)
+						{
+							//alert(element.posizioneIniziale);
+							if(element.posizioneIniziale == id)
+							{
+								alert(element.posizioniFinali);
+								return element.posizioniFinali;
+							}
+						});
+					}
+					//ritorno null se non ci sono mosse disponibili
+					return null;
+				}
+			
+			</script>
+
+    </head>
+    <body>
+	    <div class="chessboard"/>
+    </body>
+</html>
+

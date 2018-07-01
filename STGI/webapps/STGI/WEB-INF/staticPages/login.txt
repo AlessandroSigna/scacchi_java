@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script src = "http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script>
+		$(function()
+		{
+			$("#myform").on("submit", function(event)
+			{
+				event.preventDefault();
+				var formData = { 'usuario': $('input[name=usuario]').val(), 'contrasena': $('input[name=contrasena]').val() };
+				$.ajax(
+				{
+					url: "/STGI/login",
+					type: "post",
+					data: formData,
+					success: function(d)
+					{
+						if(d === "0")
+							window.location = "/STGI"
+						else if(d === "1")
+							alert("El nombre de usuario o la contraseña ingresados son incorrectos");
+						else
+							alert("Error del servidor");
+					}
+				});
+			});
+		})			
+	</script>
+	<title>STGI AJEDREZ</title>
+</HEAD>
+<BODY>
+<H1 style="text-align:center;">STGI AJEDREZ</H1>
+<H4 style="text-align:center;">Baiamonte Giacomo, Pirrello Dario, Tarantino Giovanni Luca</H4>
+<form id="myform" name="myform" method="post">
+	Usuario:<br>
+	<input type="text" id="usuario" name="usuario" pattern="[a-zA-Z0-9]+" title="Solamente letras y numeros" required/><br>
+	Contrasena:<br>
+	<input type="password" id="contrasena" name="contrasena" pattern="[a-zA-Z0-9]+" title="Solamente letras y numeros" required/><br>
+	<input type="submit" value="Iniciar Sesión"/>	
+</form>
+¿No tienes una cuenta de usuario? <a href="/STGI/signup">Inscríbete!</a>
+</HTML>
+</BODY>

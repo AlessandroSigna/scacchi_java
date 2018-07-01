@@ -1,4 +1,4 @@
-package scacchi_java;
+package Nuova_cartella;
 import java.util.Scanner;
 
 public class Player {
